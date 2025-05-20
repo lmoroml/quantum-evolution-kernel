@@ -296,7 +296,7 @@ class BaseExtractor(abc.ABC, Generic[GraphType]):
     def compile(
         self,
         filter: Callable[[BaseGraph, pl.Sequence, int], bool] | None = None,
-        pulse: pl.Pulse | None = None,
+        pl_pulse: pl.Pulse | None = None,
     ) -> list[Compiled]:
         """
         Compile all pending graphs into Pulser sequences that the Quantum Device may execute.
@@ -311,10 +311,10 @@ class BaseExtractor(abc.ABC, Generic[GraphType]):
         for graph in self.graphs:
             try:
                 register = graph.compile_register()
-                if pulse is None:
+                if pl_pulse is None:
                     pulse = graph.compile_pulse()
                 else:
-                    pulse = targets.Pulse(pulse)
+                    pulse = targets.Pulse(pl_pulse)
                 sequence = pl.Sequence(register=register.register, device=graph.device)
                 sequence.declare_channel("ising", "rydberg_global")
                 sequence.add(pulse.pulse, "ising")
