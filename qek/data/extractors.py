@@ -31,6 +31,7 @@ from qek.data import processed_data
 from qek.data.graphs import BaseGraph, BaseGraphCompiler
 from qek.data.processed_data import ProcessedData
 from qek.shared.error import CompilationError
+from qek.target import targets
 
 logger = logging.getLogger(__name__)
 
@@ -312,6 +313,8 @@ class BaseExtractor(abc.ABC, Generic[GraphType]):
                 register = graph.compile_register()
                 if pulse is None:
                     pulse = graph.compile_pulse()
+                else:
+                    pulse = targets.Pulse(pulse)
                 sequence = pl.Sequence(register=register.register, device=graph.device)
                 sequence.declare_channel("ising", "rydberg_global")
                 sequence.add(pulse.pulse, "ising")
